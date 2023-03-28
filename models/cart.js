@@ -1,19 +1,19 @@
 'use strict'
 const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
-  class cart extends Model {
+  class Cart extends Model {
     static associate(models) {
-      cart.belongsTo(models.consumer, { foreignKey: 'consumerId' })
-      cart.hasMany(models.item, { foreignKey: 'consumerId' })
+      Cart.belongsTo(models.Consumer, { foreignKey: 'consumerId' })
+      Cart.hasMany(models.Item, { foreignKey: 'consumerId' })
     }
   }
-  cart.init(
+  Cart.init(
     {
       consumerId: {
         type: DataTypes.INTEGER,
         onDelete: 'CASCADE',
         references: {
-          model: 'consumer',
+          model: 'consumers',
           key: 'id'
         }
       },
@@ -26,5 +26,5 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'carts'
     }
   )
-  return cart
+  return Cart
 }

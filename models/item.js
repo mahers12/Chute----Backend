@@ -15,11 +15,11 @@ module.exports = (sequelize, DataTypes) => {
         references: {
           model: 'consumer',
           key: 'id'
-        },
-        price: DataTypes.INTEGER,
-        description: DataTypes.STRING,
-        image: DataTypes.STRING
-      }
+        }
+      },
+      price: DataTypes.INTEGER,
+      description: DataTypes.STRING,
+      image: DataTypes.STRING
     },
     {
       sequelize,
