@@ -11,19 +11,14 @@ Router.post(
 )
 
 // Get all orders
-Router.get(
-  '/',
-  middleware.stripToken,
-  middleware.admin,
-  controller.getAllOrders
-)
+Router.get('/', middleware.stripToken, middleware.admin, controller.getOrders)
 
 // Get a single order
 Router.get(
   '/:id',
   middleware.stripToken,
   middleware.verifyToken,
-  controller.getOrderById
+  controller.getOrdersByConsumerId
 )
 
 // Update an order to 'paid' status
@@ -31,23 +26,22 @@ Router.put(
   '/:id/pay',
   middleware.stripToken,
   middleware.verifyToken,
-  controller.updateOrderToPaid
+  controller.updateOrderById
 )
 
 // Update an order to 'delivered' status
-router.put(
+Router.put(
   '/:id/deliver',
   middleware.stripToken,
   middleware.admin,
   controller.updateOrderToDelivered
 )
 
-// Get logged in user's orders
-router.get(
-  '/myorders',
+Router.delete(
+  '/delete/order',
   middleware.stripToken,
   middleware.verifyToken,
-  controller.getMyOrders
+  controller.deleteOrder
 )
 
 module.exports = Router

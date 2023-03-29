@@ -24,12 +24,7 @@ const getProducts = async (req, res) => {
 const getProductById = async (req, res) => {
   let { productId } = req.params
   try {
-    const product = await Product.findOne({
-      where: { id: productId }
-    })
-    if (!product) {
-      return res.status(404).send({ message: 'Product not found' })
-    }
+    const product = await Product.findByPk(productId)
     res.send(product)
   } catch (error) {
     throw error
@@ -40,16 +35,14 @@ const getProductById = async (req, res) => {
 const updateProductById = async (req, res) => {
   try {
     let productId = parseInt(req.params.productId)
-    const [updated] = await Product.update(
+    const updatedProduct = await Product.update(
       { ...req.body },
       {
-        where: { id: productId }
+        where: { id: productId },
+        returning: true
       }
     )
-    if (updated === 0) {
-      return res.status(404).send({ message: 'Product not found' })
-    }
-    res.send({ message: 'Product updated successfully' })
+    res.send(updatedProduct)
   } catch (error) {
     throw error
   }
@@ -59,10 +52,7 @@ const updateProductById = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     let productId = parseInt(req.params.productId)
-    const deleted = await Product.destroy({ where: { id: productId } })
-    if (deleted === 0) {
-      return res.status(404).send({ message: 'Product not found' })
-    }
+    await Product.destroy({ where: { id: productId } })
     res.send({ message: `Deleted product with an ID of ${productId}!` })
   } catch (error) {
     throw error

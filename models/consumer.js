@@ -1,5 +1,6 @@
 'use strict'
 const { Model } = require('sequelize')
+
 module.exports = (sequelize, DataTypes) => {
   class Consumer extends Model {
     static associate(models) {
@@ -7,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       Consumer.hasOne(models.Cart, { foreignKey: 'consumerId' })
     }
   }
+
   Consumer.init(
     {
       fullName: DataTypes.STRING,
@@ -20,5 +22,6 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'consumers'
     }
   )
+
   return Consumer
 }

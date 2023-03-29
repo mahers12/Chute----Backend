@@ -1,78 +1,62 @@
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 const { Consumer } = require('../models/Consumer')
 
-// Create a new consumer
-const createConsumer = async (req, res) => {
+const Register = async (req, res) => {
   try {
-    let consumer = await Consumer.create(req.body)
-    res.send(consumer)
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    const consumer = await Consumer.create({
+      username: req.body.username,
+      password: hashedPassword
+    })
+    const token = createToken(consumer)
+    res.status(201).send({ auth: true, token: token })
   } catch (error) {
-    throw error
+    console.log(error)
+    res.status(500).send('Error registering consumer')
   }
 }
 
-// Get all consumers
-const getConsumers = async (req, res) => {
-  try {
-    const consumers = await Consumer.findAll()
-    res.send(consumers)
-  } catch (error) {
-    throw error
-  }
-}
-
-// Get a consumer by ID
-const getConsumerById = async (req, res) => {
-  let { consumerId } = req.params
+const Login = async (req, res) => {
   try {
     const consumer = await Consumer.findOne({
-      where: { id: consumerId }
+      where: { username: req.body.username }
     })
     if (!consumer) {
-      return res.status(404).send({ message: 'Consumer not found' })
+      return res.status(404).send('Consumer not found')
     }
-    res.send(consumer)
-  } catch (error) {
-    throw error
-  }
-}
-
-// Update a consumer by ID
-const updateConsumerById = async (req, res) => {
-  try {
-    let consumerId = parseInt(req.params.consumerId)
-    const [updated] = await Consumer.update(
-      { ...req.body },
-      {
-        where: { id: consumerId }
-      }
+    const passwordIsValid = await bcrypt.compare(
+      req.body.password,
+      consumer.password
     )
-    if (updated === 0) {
-      return res.status(404).send({ message: 'Consumer not found' })
+    if (!passwordIsValid) {
+      return res.status(401).send({ auth: false, token: null })
     }
-    res.send({ message: 'Consumer updated successfully' })
+    const token = createToken(consumer)
+    res.send({ auth: true, token: token })
   } catch (error) {
-    throw error
+    console.log(error)
+    res.status(500).send('Error logging in consumer')
   }
 }
 
-// Delete a consumer by ID
-const deleteConsumer = async (req, res) => {
+const UpdatePassword = async (req, res) => {
   try {
-    let consumerId = parseInt(req.params.consumerId)
-    const deleted = await Consumer.destroy({ where: { id: consumerId } })
-    if (deleted === 0) {
-      return res.status(404).send({ message: 'Consumer not found' })
-    }
-    res.send({ message: `Deleted consumer with an ID of ${consumerId}!` })
+    const consumerId = req.params.consumer_id
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    await Consumer.update(
+      { password: hashedPassword },
+      { where: { id: consumerId } }
+    )
+    res.status(200).send('Password updated')
   } catch (error) {
-    throw error
+    console.log(error)
+    res.status(500).send('Error updating consumer password')
   }
 }
 
 module.exports = {
-  createConsumer,
-  getConsumers,
-  getConsumerById,
-  updateConsumerById,
-  deleteConsumer
+  Register,
+  Login,
+  UpdatePassword
 }

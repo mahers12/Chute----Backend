@@ -4,7 +4,7 @@ const logger = require('morgan')
 const ConsumerRouter = require('./routes/ConsumerRouter')
 const OrderRouter = require('./routes/OrderRouter')
 const AuthRouter = require('./routes/AuthRouter')
-const ItemRouter = require('./routes/ItemRouter')
+const ItemRouter = require('./routes/ProductRouter')
 
 const app = express()
 

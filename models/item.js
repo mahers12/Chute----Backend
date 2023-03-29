@@ -1,19 +1,21 @@
 'use strict'
 const { Model } = require('sequelize')
+
 module.exports = (sequelize, DataTypes) => {
-  class item extends Model {
+  class Item extends Model {
     static associate(models) {
-      item.belongsTo(models.Consumer, { foreignKey: 'consumerId' })
+      Item.belongsTo(models.Consumer, { foreignKey: 'consumerId' })
     }
   }
-  item.init(
+
+  Item.init(
     {
       name: DataTypes.STRING,
       consumerId: {
         type: DataTypes.INTEGER,
         onDelete: 'CASCADE',
         references: {
-          model: 'consumer',
+          model: 'consumers',
           key: 'id'
         }
       },
@@ -27,5 +29,6 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'items'
     }
   )
-  return item
+
+  return Item
 }

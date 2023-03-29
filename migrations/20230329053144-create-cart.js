@@ -1,33 +1,30 @@
 'use strict'
-/** @type {import('sequelize-cli').Migration} */
+
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('items', {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable('carts', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING
-      },
       consumerId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         onDelete: 'CASCADE',
         references: {
-          model: 'consumer',
+          model: 'consumers',
           key: 'id'
         }
       },
-      price: {
+      product: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      payment: {
+        allowNull: false,
         type: Sequelize.INTEGER
-      },
-      description: {
-        type: Sequelize.STRING
-      },
-      image: {
-        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -39,7 +36,8 @@ module.exports = {
       }
     })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('items')
+
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('carts')
   }
 }
