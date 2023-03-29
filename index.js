@@ -1,8 +1,10 @@
 const express = require('express')
 const cors = require('cors')
 const logger = require('morgan')
-// const AppRouter = require('./routes/AppRouter')
-// const ReviewRouter = require('./routes/ReviewRouter')
+const ConsumerRouter = require('./routes/ConsumerRouter')
+const OrderRouter = require('./routes/OrderRouter')
+const AuthRouter = require('./routes/AuthRouter')
+const ItemRouter = require('./routes/ItemRouter')
 
 const app = express()
 
@@ -12,10 +14,10 @@ app.use(cors())
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-// app.use('/api', AppRouter)
-// app.use('/reviews', ReviewRouter)
-// app.use('/auth', AuthRouter)
-// app.use('/album', AlbumRouter)
+app.use('/api', ConsumerRouter)
+app.use('/order', OrderRouter)
+app.use('/auth', AuthRouter)
+app.use('/item', ItemRouter)
 
 app.get('/', (req, res) => {
   res.send('This is the base path!')
